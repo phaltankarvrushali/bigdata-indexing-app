@@ -369,8 +369,8 @@ public class IndexingListener {
                     builder.field("eager_global_ordinals", "true");
                     builder.startObject("relations");
                     {
-                        builder.array("plan", "planCostShares", "linkedPlanServices");
-                        builder.array("linkedPlanServices", "linkedService", "planserviceCostShares");
+                        builder.array("plan", "planCostShares", "linkedplanServices");
+                        builder.array("linkedplanServices", "linkedService", "planserviceCostShares");
                     }
                     builder.endObject();
                 }

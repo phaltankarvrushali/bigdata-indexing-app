@@ -105,13 +105,15 @@ public class PlanService {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode rootNode = mapper.readTree(planString);
             JsonNode planCostSharesNode = rootNode.get("planCostShares");
-            String planCostSharesId = planCostSharesNode.get("objectType").textValue() + "-" + planCostSharesNode.get("objectId").textValue();
-            redisTemplate.delete(planCostSharesId);
+            String planCostSharesId = planCostSharesNode.get("objectType").textValue() + "_" + planCostSharesNode.get("objectId").textValue();
+            planDao.del(planCostSharesId);
             ArrayNode planServices = (ArrayNode) rootNode.get("linkedplanServices");
             for (JsonNode node : planServices) {
                 Iterator<Map.Entry<String, JsonNode>> itr = node.fields();
                 if (node != null)
-                    redisTemplate.delete(node.get("objectType").textValue() + "-" + node.get("objectId").textValue());
+                {
+                    planDao.del(node.get("objectType").textValue() + "_" + node.get("objectId").textValue());
+                }
 
                 while (itr.hasNext()) {
                     Map.Entry<String, JsonNode> val = itr.next();
@@ -119,13 +121,13 @@ public class PlanService {
                     System.out.println(val.getValue());
                     if (val.getKey().equals("linkedService")) {
                         JsonNode linkedServiceNode = (JsonNode) val.getValue();
-                        redisTemplate.delete(linkedServiceNode.get("objectType").textValue() + "-"
+                        planDao.del(linkedServiceNode.get("objectType").textValue() + "_"
                                 + linkedServiceNode.get("objectId").textValue());
 
                     }
                     if (val.getKey().equals("planserviceCostShares")) {
                         JsonNode planserviceCostSharesNode = (JsonNode) val.getValue();
-                        redisTemplate.delete(planserviceCostSharesNode.get("objectType").textValue() + "-"
+                        planDao.del(planserviceCostSharesNode.get("objectType").textValue() + "_"
                                 + planserviceCostSharesNode.get("objectId").textValue());
 
                     }
